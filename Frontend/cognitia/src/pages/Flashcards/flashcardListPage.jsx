@@ -1,5 +1,5 @@
-const flashcardListPage = () => {
-  return <div>flashcardListPage</div>;
+const FlashcardListPage = () => {
+  return <div>FlashcardListPage</div>;
 };
 
-export default flashcardListPage;
+export default FlashcardListPage;
