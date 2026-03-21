@@ -38,8 +38,8 @@ export const uploadDocument = async (req, res, next) => {
     const document = await Document.create({
       userId: req.user._id,
       title,
-      filename: req.file.originalname,
-      filePath: fileUrl, // Store the URL instead of the path
+      fileName: req.file.originalname,
+      filepath: fileUrl,
       fileSize: req.file.size,
     });
 
@@ -75,14 +75,14 @@ const processPDF = async (documentId, filePath) => {
     await Document.findByIdAndUpdate(documentId, {
       extractedText: text,
       chunks: chunks,
-      status: 'ready',
+      status: 'completed',
     });
 
     console.log(`Document ${documentId} processed successfully.`);
   } catch (error) {
     console.error(`Error processing document ${documentId}:`, error);
 
-    await Document.findByIdAndUpdate(documentId, { status: 'failed' });
+    await Document.findByIdAndUpdate(documentId, { status: 'error' });
   }
 };
 
