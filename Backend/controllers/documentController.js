@@ -50,7 +50,11 @@ export const uploadDocument = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      data: document,
+      data: {
+        ...document._doc,
+        createdAt: document.createdAt || document.uploadDate,
+        updatedAt: document.updatedAt || document.lastAccessed,
+      },
       message: 'Document uploaded successfully. Processing may take a few moments.',
       statusCode: 201,
     });
@@ -93,7 +97,7 @@ export const getDocuments = async (req, res, next) => {
   try {
     const documents = await Document.aggregate([
       {
-        $match: { userId: mongoose.Types.ObjectId(req.user._id) },
+        $match: { userId: new mongoose.Types.ObjectId(req.user._id) },
       },
       {
         $lookup: {
@@ -133,7 +137,11 @@ export const getDocuments = async (req, res, next) => {
     res.status(200).json({
       success: true,
       count: documents.length,
-      data: documents,
+      data: documents.map((document) => ({
+        ...document,
+        createdAt: document.createdAt || document.uploadDate,
+        updatedAt: document.updatedAt || document.lastAccessed,
+      })),
       statusCode: 200,
     });
   } catch (error) {
