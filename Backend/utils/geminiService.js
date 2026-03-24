@@ -4,6 +4,7 @@ import { GoogleGenAI } from '@google/genai';
 dotenv.config();
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const geminiModel = process.env.GEMINI_MODEL;
 
 if (!process.env.GEMINI_API_KEY) {
   console.error('Error: GEMINI_API_KEY is not set in environment variables.');
@@ -17,7 +18,7 @@ if (!process.env.GEMINI_API_KEY) {
  * @return {Promise<Array<{question: string, answer: string, difficulty: string}>>}
  */
 export const generateFlashcards = async (text, count = 10) => {
-  const prompt = `Generate exactly ${count}educational flashcards from the following text.
+  const prompt = `Generate exactly ${count} educational flashcards from the following text.
     Format each flashcard as:
     Q: [Clear, specific question]
     A: [Concise, accurate answer]
@@ -30,7 +31,7 @@ export const generateFlashcards = async (text, count = 10) => {
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-lite',
+      model: geminiModel,
       contents: prompt,
     });
 
@@ -96,7 +97,7 @@ export const generateQuiz = async (text, numQuestions = 10) => {
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-lite',
+      model: geminiModel,
       contents: prompt,
     });
 
@@ -155,7 +156,7 @@ export const generateSummary = async (text) => {
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-lite',
+      model: geminiModel,
       contents: prompt,
     });
     const generatedText = response.text;
@@ -173,10 +174,12 @@ export const generateSummary = async (text) => {
  * @return {Promise<string>}
  */
 export const chatWithContext = async (question, chunks) => {
+  const context = chunks.map((c, i) => `[Chunk ${i + 1}]\n${c.content}`).join('\n\n');
+
   const prompt = `Based on the following context from a documment, analyse the context and answer the user's question. If the answer is not in the context, say "I don't know". Be concise and accurate in your response.
 
   Context:
-  ${chunks}
+  ${context}
 
   Question: ${question}
 
@@ -184,14 +187,14 @@ export const chatWithContext = async (question, chunks) => {
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-lite',
+      model: geminiModel,
       contents: prompt,
     });
     const generatedText = response.text;
     return generatedText;
   } catch (error) {
     console.error('Gemini API error:', error);
-    throw new Error('Failed to chat with AI');
+    throw new Error('Failed to process chat request');
   }
 };
 
@@ -209,7 +212,7 @@ export const explainConcept = async (concept, context) => {
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-lite',
+      model: geminiModel,
       contents: prompt,
     });
     const generatedText = response.text;
