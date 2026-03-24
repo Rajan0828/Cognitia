@@ -66,6 +66,49 @@ export const generateFlashcards = async (req, res, next) => {
  */
 export const generateQuiz = async (req, res, next) => {
   try {
+    const { documentId, numQuestions = 10, title } = req.body;
+
+    if (!documentId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Document ID is required',
+        statusCode: 400,
+      });
+    }
+
+    const document = await Document.findOne({
+      _id: documentId,
+      userId: req.user._id,
+      status: 'completed',
+    });
+
+    if (!document) {
+      return res.status(404).json({
+        success: false,
+        error: 'Document not found or not processed yet',
+        statusCode: 404,
+      });
+    }
+
+    // Generate quiz questions using Gemini API
+    const questions = await geminiService.generateQuiz(document.extractedText, parseInt(numQuestions));
+
+    // Save quiz to database
+    const quiz = await Quiz.create({
+      userId: req.user._id,
+      documentId: document._id,
+      title: title || `Quiz for ${document.title}`,
+      questions: questions,
+      totalQuestions: questions.length,
+      userAnswers: [],
+    });
+
+    res.status(201).json({
+      success: true,
+      data: quiz,
+      message: 'Quiz generated successfully',
+      statusCode: 201,
+    });
   } catch (error) {
     next(error);
   }
