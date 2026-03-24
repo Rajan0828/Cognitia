@@ -77,7 +77,7 @@ export const generateFlashcards = async (text, count = 10) => {
  * @param {number} numQuestions - The number of quiz questions to generate
  * @return {Promise<Array<{question: string, options: Array, correctAnswer: string, explanation: string, difficulty: string}>>}
  */
-export const generateQuiz = async (text, numQuestions = 5) => {
+export const generateQuiz = async (text, numQuestions = 10) => {
   const prompt = `Generate exactly ${numQuestions} multiple-choice quiz questions from the following text.
     Format each question as:
     Q: [Question]
@@ -117,7 +117,7 @@ export const generateQuiz = async (text, numQuestions = 5) => {
         const trimmed = line.trim();
         if (trimmed.startsWith('Q:')) {
           question = trimmed.substring(2).trim();
-        } else if (trimmed.matches(/^0\d:/)) {
+        } else if (/^Q[1-4]:/.test(trimmed)) {
           options.push(trimmed.substring(3).trim());
         } else if (trimmed.startsWith('C:')) {
           correctAnswer = trimmed.substring(2).trim();
