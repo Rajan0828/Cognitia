@@ -304,6 +304,36 @@ export const explainConcept = async (req, res, next) => {
  */
 export const getChatHistory = async (req, res, next) => {
   try {
+    const { documentId } = req.params;
+
+    if (!documentId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Document ID is required',
+        statusCode: 400,
+      });
+    }
+
+    const chatHistory = await ChatHistory.findOne({
+      userId: req.user._id,
+      documentId: documentId,
+    }).select('messages'); // Only return messages
+
+    if (!chatHistory) {
+      return res.status(404).json({
+        success: false,
+        data: [],
+        message: 'Chat history not found',
+        statusCode: 404,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: chatHistory.messages,
+      message: 'Chat history retrieved successfully',
+      statusCode: 200,
+    });
   } catch (error) {
     next(error);
   }
