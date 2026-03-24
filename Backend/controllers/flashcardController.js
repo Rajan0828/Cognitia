@@ -6,10 +6,10 @@ import Flashcard from '../models/Flashcard.js';
 export const getFlashcards = async (req, res, next) => {
   try {
     const flashcards = await Flashcard.find({
-      userID: req.user._id,
+      userId: req.user._id,
       documentId: req.params.documentId,
     })
-      .populate('documentID', 'title', 'fileName')
+      .populate('documentId', 'title fileName')
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -28,7 +28,7 @@ export const getFlashcards = async (req, res, next) => {
 // @access Private
 export const getAllFlashcardSets = async (req, res, next) => {
   try {
-    const flashcardSets = await Flashcard.find({ userID: req.user._id }).populate('documentId', 'title').sort({ createdAt: -1 });
+    const flashcardSets = await Flashcard.find({ userId: req.user._id }).populate('documentId', 'title').sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -48,7 +48,7 @@ export const reviewFlashcard = async (req, res, next) => {
   try {
     const flashcardSet = await Flashcard.findOne({
       'cards._id': req.params.cardId,
-      userID: req.user._id,
+      userId: req.user._id,
     });
 
     if (!flashcardSet) {
@@ -93,7 +93,7 @@ export const toggleStarFlashcard = async (req, res, next) => {
   try {
     const flashcardSet = await Flashcard.findOne({
       'cards._id': req.params.cardId,
-      userID: req.user._id,
+      userId: req.user._id,
     });
 
     if (!flashcardSet) {
@@ -137,7 +137,7 @@ export const deleteFlashcardSet = async (req, res, next) => {
   try {
     const flashcardSet = await Flashcard.findOne({
       _id: req.params.id,
-      userID: req.user._id,
+      userId: req.user._id,
     });
 
     if (!flashcardSet) {
