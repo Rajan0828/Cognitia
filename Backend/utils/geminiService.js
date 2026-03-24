@@ -176,7 +176,7 @@ export const chatWithContext = async (question, chunks) => {
   const prompt = `Based on the following context from a documment, analyse the context and answer the user's question. If the answer is not in the context, say "I don't know". Be concise and accurate in your response.
 
   Context:
-  ${context}
+  ${chunks}
 
   Question: ${question}
 

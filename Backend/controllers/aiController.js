@@ -169,6 +169,77 @@ export const generateSummary = async (req, res, next) => {
  */
 export const chat = async (req, res, next) => {
   try {
+    const { documentId, question } = req.body;
+
+    if (!documentId || !question) {
+      return res.status(400).json({
+        success: false,
+        error: 'Document ID and question are required',
+        statusCode: 400,
+      });
+    }
+
+    const document = await Document.findOne({
+      _id: documentId,
+      userId: req.user._id,
+      status: 'completed',
+    });
+
+    if (!document) {
+      return res.status(404).json({
+        success: false,
+        error: 'Document not found or not processed yet',
+        statusCode: 404,
+      });
+    }
+
+    // Find relevant chunks for context
+    const relevantChunks = findRelevantChunks(document.chunks, question, 3); // Get top 3 relevant chunks
+    const chunkIndexes = relevantChunks.map((chunk) => chunk.chunkIndex);
+
+    // Get or create chat history for this document
+    let chatHistory = await ChatHistory.findOne({ userId: req.user._id, documentId: document._id });
+
+    if (!chatHistory) {
+      chatHistory = await ChatHistory.create({
+        userId: req.user._id,
+        documentId: document._id,
+        messages: [],
+      });
+    }
+
+    // Generate AI response using Gemini API
+    const answer = await geminiService.chatWithContext(question, relevantChunks);
+
+    // Save conversation to chat history
+    chatHistory.messages.push(
+      {
+        role: 'user',
+        content: question,
+        timestamp: new Date(),
+        relevantChunks: [],
+      },
+      {
+        role: 'assistant',
+        content: answer,
+        timestamp: new Date(),
+        relevantChunks: chunkIndexes,
+      }
+    );
+
+    await chatHistory.save();
+
+    res.status(200).json({
+      success: true,
+      data: {
+        question,
+        answer,
+        relevantChunks: chunkIndexes,
+        chatHistoryId: chatHistory._id,
+      },
+      message: 'Chat response generated successfully',
+      statusCode: 200,
+    });
   } catch (error) {
     next(error);
   }
