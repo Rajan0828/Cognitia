@@ -94,7 +94,7 @@ export const submitQuiz = async (req, res) => {
 
       if (questionIndex < quiz.questions.length) {
         const question = quiz.questions[questionIndex];
-        const isCorrect = question.correctAnswer === question.options[selectedAnswer];
+        const isCorrect = selectedAnswer === question.correctAnswer;
 
         if (isCorrect) {
           correctCount++;
@@ -110,7 +110,7 @@ export const submitQuiz = async (req, res) => {
     });
 
     // Calculate score
-    const score = Math.round((correctCount / quiz.totalQuestions) * 100);
+    const score = correctCount;
 
     // Update quiz
     quiz.userAnswers = userAnswers;
@@ -126,7 +126,7 @@ export const submitQuiz = async (req, res) => {
         score,
         correctCount,
         totalQuestions: quiz.totalQuestions,
-        percentage: score,
+        percentage: Math.round((correctCount / quiz.totalQuestions) * 100),
         userAnswers,
       },
       message: 'Quiz submitted successfully',
