@@ -124,7 +124,6 @@ export const submitQuiz = async (req, res) => {
       data: {
         quizId: quiz._id,
         score,
-        correctCount,
         totalQuestions: quiz.totalQuestions,
         percentage: Math.round((correctCount / quiz.totalQuestions) * 100),
         userAnswers,
