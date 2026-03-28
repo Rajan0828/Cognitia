@@ -8,9 +8,8 @@ import { Toaster } from 'react-hot-toast';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-      <Toaster>
-        <App />
-      </Toaster>
+      <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+      <App />
     </AuthProvider>
   </StrictMode>
 );
