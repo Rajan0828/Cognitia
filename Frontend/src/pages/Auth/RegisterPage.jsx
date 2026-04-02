@@ -139,7 +139,7 @@ const RegisterPage = () => {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="group relative w-full h-12 bg-linear-to-r from-emerald-500 to-teal-400 hove:from-emerald-600 hover:to-teal-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 disabled:opacity-50 disabled:cursro-not-allowed disabled:active:scale-100 shadow-lg shadow-emerald-500/25 overflow-hidden"
+              className="group relative w-full h-12 bg-linear-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-lg shadow-emerald-500/25 overflow-hidden"
             >
               <span className="relative z-10 flex items-center justify-center gap-2">
                 {loading ? (
