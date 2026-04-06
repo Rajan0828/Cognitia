@@ -168,101 +168,114 @@ const DocumentListPage = () => {
         </div>
         {renderContent()}
       </div>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm">
-        <div className="border=slate-200 relative w-full max-w-lg rounded-2xl border bg-white/95 p-6 shadow-2xl shadow-slate-900/20 backdrop-blur-xl">
-          {/* CLOSE BUTTON */}
-          <button
-            onClick={() => setIsUploadModalOpen(false)}
-            className="absolute top-6 right-6 flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-all duration-200 hover:bg-slate-100 hover:text-slate-600"
-          >
-            <X className="h-5 w-5" strokeWidth={2.5} />
-          </button>
 
-          {/* MODAL HEADER */}
-          <div className="mb-6">
-            <h2 className="text-xl font-medium tracking-tight text-slate-900">
-              Upload Document
-            </h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Select a file from your computer to upload. Supported formats
-              include PDF, DOCX, and TXT. After uploading, you can manage your
-              documents and view their details.
-            </p>
-          </div>
+      {isUploadModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm">
+          <div className="border=slate-200 relative w-full max-w-lg rounded-2xl border bg-white/95 p-6 shadow-2xl shadow-slate-900/20 backdrop-blur-xl">
+            {/* CLOSE BUTTON */}
+            <button
+              onClick={() => setIsUploadModalOpen(false)}
+              className="absolute top-6 right-6 flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-all duration-200 hover:bg-slate-100 hover:text-slate-600"
+            >
+              <X className="h-5 w-5" strokeWidth={2.5} />
+            </button>
 
-          {/* FORM */}
-          <form onSubmit={handleUpload} className="space-y-5">
-            {/* TITLE INPUT */}
-            <div className="space-y-2">
-              <label className="block text-xs font-semibold tracking-wide text-slate-700 uppercase">
-                Document Title
-              </label>
-              <input
-                type="text"
-                value={uploadTitle}
-                onChange={(e) => setUploadTitle(e.target.value)}
-                required
-                className="h-12 w-full rounded-xl border-2 border-slate-200 bg-slate-50/50 px-4 text-sm font-medium text-slate-900 placeholder-slate-400 transition-all duration-200 focus:border-emerald-500 focus:bg-white focus:shadow-lg focus:shadow-emerald-500/10 focus:outline-none"
-                placeholder="Enter document title"
-              />
+            {/* MODAL HEADER */}
+            <div className="mb-6">
+              <h2 className="text-xl font-medium tracking-tight text-slate-900">
+                Upload Document
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Select a pdf file from your computer to upload.
+              </p>
             </div>
 
-            {/* FILE UPLOAD */}
-            <div className="">
-              <label className="">PDF File</label>
-              <div className="">
+            {/* FORM */}
+            <form onSubmit={handleUpload} className="space-y-5">
+              {/* TITLE INPUT */}
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold tracking-wide text-slate-700 uppercase">
+                  Document Title
+                </label>
                 <input
-                  id="file-upload"
-                  type="file"
-                  accept=".pdf,.docx,.txt"
-                  onChange={handleFileChange}
+                  type="text"
+                  value={uploadTitle}
+                  onChange={(e) => setUploadTitle(e.target.value)}
                   required
-                  className=""
+                  className="h-12 w-full rounded-xl border-2 border-slate-200 bg-slate-50/50 px-4 text-sm font-medium text-slate-900 placeholder-slate-400 transition-all duration-200 focus:border-emerald-500 focus:bg-white focus:shadow-lg focus:shadow-emerald-500/10 focus:outline-none"
+                  placeholder="Enter document title"
                 />
-                <div className="">
-                  <div className="">
-                    <Upload className="" strokeWidth={2} />
+              </div>
+
+              {/* FILE UPLOAD */}
+              <div className="space-y-2">
+                <label className="font-semi-bold block text-xs tracking-wide text-slate-700 uppercase">
+                  PDF File
+                </label>
+                <div className="relative rounded-xl border-2 border-dashed border-slate-300 bg-slate-50/50 transition-all duration-200 hover:border-emerald-400 hover:bg-emerald-50/30">
+                  <input
+                    id="file-upload"
+                    type="file"
+                    accept=".pdf"
+                    onChange={handleFileChange}
+                    required
+                    className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
+                  />
+                  <div className="flex flex-col items-center justify-center px-6 py-10">
+                    <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-linear-to-r from-emerald-100 to-teal-100">
+                      <Upload
+                        className="h-7 w-7 text-emerald-600"
+                        strokeWidth={2}
+                      />
+                    </div>
+                    <p className="mb-1 text-sm font-medium text-slate-700">
+                      {uploadFile ? (
+                        <span>{uploadFile.name}</span>
+                      ) : (
+                        <>
+                          {" "}
+                          <span className="text-emerald-600">
+                            Click to upload a file
+                          </span>
+                          {""} or drag and drop
+                        </>
+                      )}
+                    </p>
+                    <p className="text-xs text-slate-500">PDF up to 10MB</p>
                   </div>
-                  <p className="">
-                    {uploadFile ? (
-                      <span>{uploadFile.name}</span>
-                    ) : (
-                      <>
-                        {" "}
-                        <span className="">Click to upload a file</span>
-                        {""}or drag and drop
-                      </>
-                    )}
-                  </p>
-                  <p className="">PDF up to 10MB</p>
                 </div>
               </div>
-            </div>
 
-            {/* ACTION BUTTONS */}
-            <div className="">
-              <button
-                type="button"
-                onClick={() => setIsUploadModalOpen(false)}
-                disabled={uploading}
-                className=""
-              >
-                Cancel
-              </button>
-              <button type="submit" disabled={uploading} className="">
-                {uploading ? (
-                  <span className="">
-                    {" "}
-                    <div className="" /> Uploading...{" "}
-                  </span>
-                ) : (
-                  "Upload"
-                )}
-              </button>
-            </div>
-          </form>
+              {/* ACTION BUTTONS */}
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsUploadModalOpen(false)}
+                  disabled={uploading}
+                  className="h-11 flex-1 rounded-xl border-2 border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={uploading}
+                  className="h-11 flex-1 rounded-xl bg-linear-to-r from-emerald-500 to-teal-500 px-4 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all duration-200 hover:from-emerald-600 hover:to-teal-600 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {uploading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      {" "}
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />{" "}
+                      Uploading...{" "}
+                    </span>
+                  ) : (
+                    "Upload"
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
