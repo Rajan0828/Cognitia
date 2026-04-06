@@ -1,25 +1,30 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import NotFoundPage from './pages/NotFoundPage';
-import RegisterPage from './pages/Auth/RegisterPage';
-import LoginPage from './pages/Auth/LoginPage';
-import DocumentListPage from './pages/Documents/DocumentListPage';
-import FlashcardListPage from './pages/Flashcards/flashcardListPage';
-import DocumentsDetailPage from './pages/Documents/DocumentsDetailPage';
-import FlashcardPage from './pages/Flashcards/FlashcardPage';
-import QuizTakePage from './pages/Quizzes/QuizTakePage';
-import QuizResultPage from './pages/Quizzes/QuizResultPage';
-import ProfilePage from './pages/Profile/ProfilePage';
-import ProtectedRoute from './components/Auth/ProtectedRoute';
-import DashboardPage from './pages/Dashboard/DashboardPage';
-import { useAuth } from './context/AuthContext';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import NotFoundPage from "./pages/NotFoundPage";
+import RegisterPage from "./pages/Auth/RegisterPage";
+import LoginPage from "./pages/Auth/LoginPage";
+import DocumentListPage from "./pages/Documents/DocumentListPage";
+import FlashcardListPage from "./pages/Flashcards/flashcardListPage";
+import DocumentsDetailPage from "./pages/Documents/DocumentsDetailPage";
+import FlashcardPage from "./pages/Flashcards/FlashcardPage";
+import QuizTakePage from "./pages/Quizzes/QuizTakePage";
+import QuizResultPage from "./pages/Quizzes/QuizResultPage";
+import ProfilePage from "./pages/Profile/ProfilePage";
+import ProtectedRoute from "./components/Auth/ProtectedRoute";
+import DashboardPage from "./pages/Dashboard/DashboardPage";
+import { useAuth } from "./context/AuthContext";
 
 const App = () => {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex h-screen items-center justify-center">
         <p>Loading...</p>
       </div>
     );
@@ -29,7 +34,16 @@ const App = () => {
     <Router>
       <Routes>
         {/* If user is authenticated, redirect to dashboard otherwise, redirect to login */}
-        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />}></Route>
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        ></Route>
 
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/register" element={<RegisterPage />}></Route>

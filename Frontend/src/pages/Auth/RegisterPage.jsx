@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import authService from '../../services/authService';
-import { BrainCircuit, Mail, Lock, ArrowRight, User } from 'lucide-react';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import authService from "../../services/authService";
+import { BrainCircuit, Mail, Lock, ArrowRight, User } from "lucide-react";
+import toast from "react-hot-toast";
 
 const RegisterPage = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
 
@@ -18,55 +18,63 @@ const RegisterPage = () => {
     e.preventDefault();
 
     if (username.length < 5) {
-      setError('Username must be at least 5 characters long.');
+      setError("Username must be at least 5 characters long.");
       return;
     }
 
-    if (!email.includes('@')) {
-      setError('Please enter a valid email address.');
+    if (!email.includes("@")) {
+      setError("Please enter a valid email address.");
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
+      setError("Password must be at least 6 characters long.");
       return;
     }
     setLoading(true);
-    setError('');
+    setError("");
     try {
       await authService.register(username, email, password);
-      toast.success('Registered successfully. Please login.');
-      navigate('/login');
+      toast.success("Registered successfully. Please login.");
+      navigate("/login");
     } catch (error) {
-      setError(error.message || 'Failed to register. Please try again.');
-      toast.error(error.message || 'Failed to register.');
+      setError(error.message || "Failed to register. Please try again.");
+      toast.error(error.message || "Failed to register.");
     } finally {
       setLoading(false);
     }
   };
   return (
-    <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-50 ">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-50 via-white to-slate-50">
       <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] bg-size-[16px_16px] opacity-30" />
       <div className="relative w-full max-w-md px-6">
-        <div className="bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-3xl shadow-xl shadow-slate-200/50 p-10">
+        <div className="rounded-3xl border border-slate-200/60 bg-white/80 p-10 shadow-xl shadow-slate-200/50 backdrop-blur-xl">
           {/* HEADER */}
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-emerald-500 to-teal-500 shadow-lg shadow-emerald-500/25 mb-6">
-              <BrainCircuit className="w-7 h-7 text-white" strokeWidth={2} />
+          <div className="mb-10 text-center">
+            <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-emerald-500 to-teal-500 shadow-lg shadow-emerald-500/25">
+              <BrainCircuit className="h-7 w-7 text-white" strokeWidth={2} />
             </div>
-            <h1 className="text-2xl font-medium text-slate-900 tracking-tight mb-2">Create an account</h1>
-            <p className="text-slate-500 text-sm">Start your AI-powered learning experience</p>
+            <h1 className="mb-2 text-2xl font-medium tracking-tight text-slate-900">
+              Create an account
+            </h1>
+            <p className="text-sm text-slate-500">
+              Start your AI-powered learning experience
+            </p>
           </div>
 
           {/* FORM */}
           <div className="space-y-5">
             {/* USERNAME FIELD */}
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide">Username</label>
-              <div className="relative group">
+              <label className="block text-xs font-semibold tracking-wide text-slate-700 uppercase">
+                Username
+              </label>
+              <div className="group relative">
                 <div
-                  className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-200 ${
-                    focusedField === 'username' ? 'text-emerald-500' : 'text-slate-400'
+                  className={`pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 transition-colors duration-200 ${
+                    focusedField === "username"
+                      ? "text-emerald-500"
+                      : "text-slate-400"
                   }`}
                 >
                   <User className="h-5 w-5" strokeWidth={2} />
@@ -75,20 +83,24 @@ const RegisterPage = () => {
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  onFocus={() => setFocusedField('username')}
+                  onFocus={() => setFocusedField("username")}
                   onBlur={() => setFocusedField(null)}
-                  className="w-full h-12 pl-12 pr-4 border-2 border-slate-200 rounded-xl bg-slate-50/50 text-slate-900 placeholder-slate-400 text-sm font-medium  transition-all duration-200 focus:outline-none focus:border-emerald-500 focus:bg-white focus:shadow-lg focus:shadow-emerald-500/10"
+                  className="h-12 w-full rounded-xl border-2 border-slate-200 bg-slate-50/50 pr-4 pl-12 text-sm font-medium text-slate-900 placeholder-slate-400 transition-all duration-200 focus:border-emerald-500 focus:bg-white focus:shadow-lg focus:shadow-emerald-500/10 focus:outline-none"
                   placeholder="Username"
                 />
               </div>
             </div>
             {/* EMAIL FIELD */}
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide">Email</label>
-              <div className="relative group">
+              <label className="block text-xs font-semibold tracking-wide text-slate-700 uppercase">
+                Email
+              </label>
+              <div className="group relative">
                 <div
-                  className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-200 ${
-                    focusedField === 'email' ? 'text-emerald-500' : 'text-slate-400'
+                  className={`pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 transition-colors duration-200 ${
+                    focusedField === "email"
+                      ? "text-emerald-500"
+                      : "text-slate-400"
                   }`}
                 >
                   <Mail className="h-5 w-5" strokeWidth={2} />
@@ -97,9 +109,9 @@ const RegisterPage = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  onFocus={() => setFocusedField('email')}
+                  onFocus={() => setFocusedField("email")}
                   onBlur={() => setFocusedField(null)}
-                  className="w-full h-12 pl-12 pr-4 border-2 border-slate-200 rounded-xl bg-slate-50/50 text-slate-900 placeholder-slate-400 text-sm font-medium  transition-all duration-200 focus:outline-none focus:border-emerald-500 focus:bg-white focus:shadow-lg focus:shadow-emerald-500/10"
+                  className="h-12 w-full rounded-xl border-2 border-slate-200 bg-slate-50/50 pr-4 pl-12 text-sm font-medium text-slate-900 placeholder-slate-400 transition-all duration-200 focus:border-emerald-500 focus:bg-white focus:shadow-lg focus:shadow-emerald-500/10 focus:outline-none"
                   placeholder="Email"
                 />
               </div>
@@ -107,11 +119,15 @@ const RegisterPage = () => {
 
             {/* PASSWORD FIELD */}
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide">Password</label>
-              <div className="relative group">
+              <label className="block text-xs font-semibold tracking-wide text-slate-700 uppercase">
+                Password
+              </label>
+              <div className="group relative">
                 <div
-                  className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-200 ${
-                    focusedField === 'password' ? 'text-emerald-500' : 'text-slate-400'
+                  className={`pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 transition-colors duration-200 ${
+                    focusedField === "password"
+                      ? "text-emerald-500"
+                      : "text-slate-400"
                   }`}
                 >
                   <Lock className="h-5 w-5" strokeWidth={2} />
@@ -120,9 +136,9 @@ const RegisterPage = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  onFocus={() => setFocusedField('password')}
+                  onFocus={() => setFocusedField("password")}
                   onBlur={() => setFocusedField(null)}
-                  className="w-full h-12 pl-12 pr-4 border-2 border-slate-200 rounded-xl bg-slate-50/50 text-slate-900 placeholder-slate-400 text-sm font-medium  transition-all duration-200 focus:outline-none focus:border-emerald-500 focus:bg-white focus:shadow-lg focus:shadow-emerald-500/10"
+                  className="h-12 w-full rounded-xl border-2 border-slate-200 bg-slate-50/50 pr-4 pl-12 text-sm font-medium text-slate-900 placeholder-slate-400 transition-all duration-200 focus:border-emerald-500 focus:bg-white focus:shadow-lg focus:shadow-emerald-500/10 focus:outline-none"
                   placeholder="••••••••"
                 />
               </div>
@@ -130,8 +146,10 @@ const RegisterPage = () => {
 
             {/* ERROR MESSAGE */}
             {error && (
-              <div className="rounded-lg bg-red-50 border border-red-200 p-3">
-                <p className="text-xs text-red-600 font-medium text-center">{error}</p>
+              <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                <p className="text-center text-xs font-medium text-red-600">
+                  {error}
+                </p>
               </div>
             )}
 
@@ -139,42 +157,54 @@ const RegisterPage = () => {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="group relative w-full h-12 bg-linear-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-lg shadow-emerald-500/25 overflow-hidden"
+              className="group relative h-12 w-full overflow-hidden rounded-xl bg-linear-to-r from-emerald-500 to-teal-400 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all duration-200 hover:from-emerald-600 hover:to-teal-600 focus:ring-4 focus:ring-emerald-500/20 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100"
             >
               <span className="relative z-10 flex items-center justify-center gap-2">
                 {loading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                     Creating account...
                   </>
                 ) : (
                   <>
                     Create account
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" strokeWidth={2.5} />
+                    <ArrowRight
+                      className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+                      strokeWidth={2.5}
+                    />
                   </>
                 )}
               </span>
-              <div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+              <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-white/0 via-white/20 to-white/0 transition-transform duration-700 group-hover:translate-x-full" />
             </button>
           </div>
           {/* FOOTER */}
-          <div className="mt-8 pt-6 border-t border-slate-200/60">
+          <div className="mt-8 border-t border-slate-200/60 pt-6">
             <p className="text-center text-sm text-slate-600">
               Already have an account?
-              <Link to="/login" className="font-semibold text-slate-900 hover:text-emerald-700 transition-colors duration-200">
+              <Link
+                to="/login"
+                className="font-semibold text-slate-900 transition-colors duration-200 hover:text-emerald-700"
+              >
                 Sign in
               </Link>
             </p>
           </div>
         </div>
         {/* SUBTLE FOOTER TEXT */}
-        <p className="text-center text-xs text-slate-400 mt-6">
-          By continuing, you agree to our{' '}
-          <Link to="" className="font-medium text-slate-600 hover:text-emerald-700 transition-colors duration-200">
+        <p className="mt-6 text-center text-xs text-slate-400">
+          By continuing, you agree to our{" "}
+          <Link
+            to=""
+            className="font-medium text-slate-600 transition-colors duration-200 hover:text-emerald-700"
+          >
             User Agreement
-          </Link>{' '}
-          and{' '}
-          <Link to="" className="font-medium text-slate-600 hover:text-emerald-700 transition-colors duration-200">
+          </Link>{" "}
+          and{" "}
+          <Link
+            to=""
+            className="font-medium text-slate-600 transition-colors duration-200 hover:text-emerald-700"
+          >
             Privacy Policy
           </Link>
           .
