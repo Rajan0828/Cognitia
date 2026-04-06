@@ -83,7 +83,7 @@ const DocumentListPage = () => {
     setDeleting(true);
     try {
       await documentService.deleteDocument(selectDocument._id);
-      toast.success(`Document ${selectDocument.title} deleted successfully`);
+      toast.success(`Document ${selectDocument.title} has been deleted`);
       setIsDeleteModalOpen(false);
       setSelectDocument(null);
       setDocuments(documents.filter((doc) => doc._id !== selectDocument._id));
@@ -98,14 +98,14 @@ const DocumentListPage = () => {
   const renderContent = () => {
     if (loading) {
       return (
-        <div className="flex min-h-[400px] items-center justify-center">
+        <div className="flex min-h-100 items-center justify-center">
           <Spinner />
         </div>
       );
     }
     if (documents.length === 0) {
       return (
-        <div className="flex min-h-[400px] items-center justify-center">
+        <div className="flex min-h-100 items-center justify-center">
           <div className="max-w-md text-center">
             <div className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-linear-to-br from-slate-100 to-slate-200 shadow-lg shadow-slate-200/50">
               <FileText
@@ -166,12 +166,14 @@ const DocumentListPage = () => {
             </Button>
           )}
         </div>
+
         {renderContent()}
       </div>
 
+      {/* UPLOAD MODAL */}
       {isUploadModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm">
-          <div className="border=slate-200 relative w-full max-w-lg rounded-2xl border bg-white/95 p-6 shadow-2xl shadow-slate-900/20 backdrop-blur-xl">
+          <div className="relative w-full max-w-lg rounded-2xl border border-slate-200 bg-white/95 p-6 shadow-2xl shadow-slate-900/20 backdrop-blur-xl">
             {/* CLOSE BUTTON */}
             <button
               onClick={() => setIsUploadModalOpen(false)}
@@ -209,7 +211,7 @@ const DocumentListPage = () => {
 
               {/* FILE UPLOAD */}
               <div className="space-y-2">
-                <label className="font-semi-bold block text-xs tracking-wide text-slate-700 uppercase">
+                <label className="block text-xs font-semibold tracking-wide text-slate-700 uppercase">
                   PDF File
                 </label>
                 <div className="relative rounded-xl border-2 border-dashed border-slate-300 bg-slate-50/50 transition-all duration-200 hover:border-emerald-400 hover:bg-emerald-50/30">
@@ -273,6 +275,70 @@ const DocumentListPage = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-md rounded-2xl border border-slate-200/60 bg-white/95 p-8 shadow-2xl shadow-slate-900/20 backdrop-blur-xl">
+            {/* CLOSE BUTTON */}
+            <button
+              onClick={() => setIsDeleteModalOpen(false)}
+              className="absolute top-6 right-6 flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-all duration-200 hover:bg-slate-100 hover:text-slate-600"
+            >
+              <X className="h-5 w-5" strokeWidth={2} />
+            </button>
+
+            {/* MODAL HEADER */}
+            <div className="mb-6">
+              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-r from-red-100 to-red-200">
+                <Trash2 className="h-6 w-6 text-red-600" strokeWidth={2} />
+              </div>
+              <h2 className="text-xl font-medium tracking-tight text-slate-900">
+                Confirm Delete
+              </h2>
+            </div>
+
+            {/* MODAL BODY */}
+            <p className="mb-2 text-sm text-slate-600">
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-slate-900">
+                {selectDocument?.title}
+              </span>
+              ?
+            </p>
+            <p className="mb-6 text-sm text-red-500">
+              <span className="font-semibold">Warning:</span> This action cannot
+              be undone.
+            </p>
+
+            {/* ACTION BUTTON */}
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setIsDeleteModalOpen(false)}
+                disabled={deleting}
+                className="h-11 flex-1 rounded-xl border-2 border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                disabled={deleting}
+                className="h-11 flex-1 rounded-xl bg-linear-to-r from-red-500 to-red-600 px-4 text-sm font-semibold text-white shadow-lg shadow-red-500/25 transition-all duration-200 hover:from-red-600 hover:to-red-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {deleting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Deleting...
+                  </span>
+                ) : (
+                  "Delete"
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}
