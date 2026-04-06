@@ -66,7 +66,7 @@ const DocumentListPage = () => {
       setLoading(true);
       fetchDocuments();
     } catch (error) {
-      toast.error(error.message || "Failed to upload document");
+      toast.error(error.error || "Failed to upload document");
       console.error(error);
     } finally {
       setUploading(false);
