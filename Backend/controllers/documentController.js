@@ -209,7 +209,7 @@ export const deleteDocument = async (req, res, next) => {
     }
 
     // Delete file from filesystem
-    await fs.unlink(document.filepath).catch(() => {});
+    await fs.unlink(document.filePath).catch(() => {});
 
     // Delete document record
     await document.deleteOne();

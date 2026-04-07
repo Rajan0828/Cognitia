@@ -1,22 +1,22 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const documentSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
     title: {
       type: String,
-      required: [true, 'Please add a title'],
+      required: [true, "Please add a title"],
       trim: true,
     },
     fileName: {
       type: String,
       required: true,
     },
-    filepath: {
+    filePath: {
       type: String,
       required: true,
     },
@@ -26,7 +26,7 @@ const documentSchema = new mongoose.Schema(
     },
     extractedText: {
       type: String,
-      default: '',
+      default: "",
     },
     chunks: [
       {
@@ -54,8 +54,8 @@ const documentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['processing', 'completed', 'error'],
-      default: 'processing',
+      enum: ["processing", "completed", "error"],
+      default: "processing",
     },
   },
   {
@@ -65,6 +65,6 @@ const documentSchema = new mongoose.Schema(
 
 documentSchema.index({ userId: 1, uploadDate: -1 });
 
-const Document = mongoose.model('Document', documentSchema);
+const Document = mongoose.model("Document", documentSchema);
 
 export default Document;
