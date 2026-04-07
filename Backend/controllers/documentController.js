@@ -1,10 +1,10 @@
-import Document from '../models/Document.js';
-import Flashcard from '../models/Flashcard.js';
-import Quiz from '../models/Quiz.js';
-import { extractTextFromPDF } from '../utils/pdfParser.js';
-import { chunkText } from '../utils/textChunker.js';
-import fs from 'fs/promises';
-import mongoose from 'mongoose';
+import Document from "../models/Document.js";
+import Flashcard from "../models/Flashcard.js";
+import Quiz from "../models/Quiz.js";
+import { extractTextFromPDF } from "../utils/pdfParser.js";
+import { chunkText } from "../utils/textChunker.js";
+import fs from "fs/promises";
+import mongoose from "mongoose";
 
 // @desc Upload PDF document
 // @route POST /api/documents/upload
@@ -14,7 +14,7 @@ export const uploadDocument = async (req, res, next) => {
     if (!req.file) {
       return res.status(400).json({
         success: false,
-        error: 'Please upload a PDF file',
+        error: "Please upload a PDF file",
         statusCode: 400,
       });
     }
@@ -25,7 +25,7 @@ export const uploadDocument = async (req, res, next) => {
       await fs.unlink(req.file.path);
       return res.status(400).json({
         success: false,
-        error: 'Please provide a title. Title is required',
+        error: "Please provide a title. Title is required",
         statusCode: 400,
       });
     }
@@ -39,13 +39,13 @@ export const uploadDocument = async (req, res, next) => {
       userId: req.user._id,
       title,
       fileName: req.file.originalname,
-      filepath: fileUrl,
+      filePath: fileUrl,
       fileSize: req.file.size,
     });
 
     // Process PDF in background
     processPDF(document._id, req.file.path).catch((error) => {
-      console.error('Error processing PDF:', error);
+      console.error("Error processing PDF:", error);
     });
 
     res.status(201).json({
@@ -55,7 +55,7 @@ export const uploadDocument = async (req, res, next) => {
         createdAt: document.createdAt || document.uploadDate,
         updatedAt: document.updatedAt || document.lastAccessed,
       },
-      message: 'Document uploaded successfully. Processing may take a few moments.',
+      message: "Document uploaded successfully. Processing may take a few moments.",
       statusCode: 201,
     });
   } catch (error) {
@@ -79,14 +79,14 @@ const processPDF = async (documentId, filePath) => {
     await Document.findByIdAndUpdate(documentId, {
       extractedText: text,
       chunks: chunks,
-      status: 'completed',
+      status: "completed",
     });
 
     console.log(`Document ${documentId} processed successfully.`);
   } catch (error) {
     console.error(`Error processing document ${documentId}:`, error);
 
-    await Document.findByIdAndUpdate(documentId, { status: 'error' });
+    await Document.findByIdAndUpdate(documentId, { status: "error" });
   }
 };
 
@@ -101,24 +101,24 @@ export const getDocuments = async (req, res, next) => {
       },
       {
         $lookup: {
-          from: 'flashcards',
-          localField: '_id',
-          foreignField: 'documentId',
-          as: 'flashcards',
+          from: "flashcards",
+          localField: "_id",
+          foreignField: "documentId",
+          as: "flashcards",
         },
       },
       {
         $lookup: {
-          from: 'quizzes',
-          localField: '_id',
-          foreignField: 'documentId',
-          as: 'quizzes',
+          from: "quizzes",
+          localField: "_id",
+          foreignField: "documentId",
+          as: "quizzes",
         },
       },
       {
         $addFields: {
-          flashcardCount: { $size: '$flashcards' },
-          quizCount: { $size: '$quizzes' },
+          flashcardCount: { $size: "$flashcards" },
+          quizCount: { $size: "$quizzes" },
         },
       },
       {
@@ -162,7 +162,7 @@ export const getDocument = async (req, res, next) => {
     if (!document) {
       return res.status(404).json({
         success: false,
-        error: 'Document not found',
+        error: "Document not found",
         statusCode: 404,
       });
     }
@@ -203,7 +203,7 @@ export const deleteDocument = async (req, res, next) => {
     if (!document) {
       return res.status(404).json({
         success: false,
-        error: 'Document not found',
+        error: "Document not found",
         statusCode: 404,
       });
     }
@@ -217,7 +217,7 @@ export const deleteDocument = async (req, res, next) => {
     res.status(200).json({
       success: true,
       statusCode: 200,
-      message: 'Document deleted successfully',
+      message: "Document deleted successfully",
     });
   } catch (error) {
     next(error);
