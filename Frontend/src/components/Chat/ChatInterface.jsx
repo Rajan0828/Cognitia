@@ -2,12 +2,14 @@ import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { Send, MessageSquare, Sparkles } from "lucide-react";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import Spinner from "../../components/Common/Spinner";
 import MarkdownRenderer from "../../components/Common/MarkdownRenderer";
 import aiService from "../../services/aiService";
 
 const ChatInterface = () => {
   const { id: documentId } = useParams();
+  const { user } = useAuth();
   const [history, setHistory] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -72,25 +74,40 @@ const ChatInterface = () => {
       setLoading(false);
     }
   };
+
   const renderMessage = (msg, index) => {
+    const isUser = msg.role === "user";
+
     return (
       <div
-        key={`${msg.role}-${msg.timestamp || index}`}
-        className={`mb-4 flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+        key={index}
+        className={`my-4 flex items-start gap-3 ${isUser ? "justify-end" : ""}`}
       >
+        {!isUser && (
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-emerald-400 to-teal-500 shadow-lg drop-shadow-emerald-500/25">
+            <Sparkles className="h-4 w-4 text-white" strokeWidth={2} />
+          </div>
+        )}
         <div
-          className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm ${
-            msg.role === "user"
-              ? "rounded-br-md bg-emerald-500 text-white"
-              : "rounded-bl-md border border-slate-200/60 bg-white text-slate-800"
+          className={`max-2-lg rounded-2xl p-4 shadow-sm ${
+            isUser
+              ? "rounded-br-md bg-linear-to-br from-emerald-500 to-teal-500 text-white"
+              : "rounded-bl-md border border-slate-200/60 bg-white text-slate-800 "
           }`}
         >
-          {msg.role === "assistant" ? (
-            <MarkdownRenderer content={msg.content} />
+          {isUser ? (
+            <p className="text-sm leading-relaxed">{msg.content}</p>
           ) : (
-            <p>{msg.content}</p>
+            <div className="prose prose-sm prose-slate max-w-none">
+              <MarkdownRenderer content={msg.content} />
+            </div>
           )}
         </div>
+        {isUser && (
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-slate-200 to-slate-300 text-sm font-semibold text-slate-700 shadow-sm">
+            {user?.username?.charAt(0).toUpperCase() || "U"}
+          </div>
+        )}
       </div>
     );
   };
