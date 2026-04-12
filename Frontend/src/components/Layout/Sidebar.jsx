@@ -22,9 +22,9 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
 
   const navLinks = [
     { text: "Dashboard", icon: LayoutDashboard, to: "/dashboard" },
-    { text: "Profile", icon: User, to: "/profile" },
     { text: "Documents", icon: FileText, to: "/documents" },
     { text: "Flashcards", icon: BookOpen, to: "/flashcards" },
+    { text: "Profile", icon: User, to: "/profile" },
   ];
   return (
     <>
