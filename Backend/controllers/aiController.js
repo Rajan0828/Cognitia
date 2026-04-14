@@ -1,9 +1,9 @@
-import Document from '../models/Document.js';
-import Flashcard from '../models/Flashcard.js';
-import Quiz from '../models/Quiz.js';
-import ChatHistory from '../models/ChatHistory.js';
-import * as geminiService from '../utils/geminiService.js';
-import { findRelevantChunks } from '../utils/textChunker.js';
+import Document from "../models/Document.js";
+import Flashcard from "../models/Flashcard.js";
+import Quiz from "../models/Quiz.js";
+import ChatHistory from "../models/ChatHistory.js";
+import * as geminiService from "../utils/geminiService.js";
+import { findRelevantChunks } from "../utils/textChunker.js";
 
 /**
  * @desc    Generate flashcards from a document
@@ -18,22 +18,22 @@ export const generateFlashcards = async (req, res, next) => {
     if (!documentId) {
       return res.status(400).json({
         success: false,
-        error: 'Document ID is required',
+        error: "Document ID is required",
         statusCode: 400,
       });
     }
 
-    const document = await Document.findOne({ _id: documentId, userId: req.user._id, status: 'completed' });
+    const document = await Document.findOne({ _id: documentId, userId: req.user._id, status: "completed" });
     if (!document) {
       return res.status(404).json({
         success: false,
-        error: 'Document not found',
+        error: "Document not found",
         statusCode: 404,
       });
     }
 
     // Generate flashcards using Gemini API
-    const cards = await geminiService.generateFlashcards(document.extractedText, parseInt(count));
+    const cards = await geminiService.generateFlashcards(document.extractedText, parseInt(count, 10) || 10);
 
     // Save flashcards to database
     const flashcardSet = await Flashcard.create({
@@ -51,7 +51,7 @@ export const generateFlashcards = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: flashcardSet,
-      message: 'Flashcards generated successfully',
+      message: "Flashcards generated successfully",
       statusCode: 200,
     });
   } catch (error) {
@@ -71,7 +71,7 @@ export const generateQuiz = async (req, res, next) => {
     if (!documentId) {
       return res.status(400).json({
         success: false,
-        error: 'Document ID is required',
+        error: "Document ID is required",
         statusCode: 400,
       });
     }
@@ -79,13 +79,13 @@ export const generateQuiz = async (req, res, next) => {
     const document = await Document.findOne({
       _id: documentId,
       userId: req.user._id,
-      status: 'completed',
+      status: "completed",
     });
 
     if (!document) {
       return res.status(404).json({
         success: false,
-        error: 'Document not found or not processed yet',
+        error: "Document not found or not processed yet",
         statusCode: 404,
       });
     }
@@ -106,7 +106,7 @@ export const generateQuiz = async (req, res, next) => {
     res.status(201).json({
       success: true,
       data: quiz,
-      message: 'Quiz generated successfully',
+      message: "Quiz generated successfully",
       statusCode: 201,
     });
   } catch (error) {
@@ -126,7 +126,7 @@ export const generateSummary = async (req, res, next) => {
     if (!documentId) {
       return res.status(400).json({
         success: false,
-        error: 'Document ID is required',
+        error: "Document ID is required",
         statusCode: 400,
       });
     }
@@ -134,13 +134,13 @@ export const generateSummary = async (req, res, next) => {
     const document = await Document.findOne({
       _id: documentId,
       userId: req.user._id,
-      status: 'completed',
+      status: "completed",
     });
 
     if (!document) {
       return res.status(404).json({
         success: false,
-        error: 'Document not found or not processed yet',
+        error: "Document not found or not processed yet",
         statusCode: 404,
       });
     }
@@ -154,7 +154,7 @@ export const generateSummary = async (req, res, next) => {
         documentId: document._id,
         summary,
       },
-      message: 'Summary generated successfully',
+      message: "Summary generated successfully",
       statusCode: 200,
     });
   } catch (error) {
@@ -174,7 +174,7 @@ export const chat = async (req, res, next) => {
     if (!documentId || !question) {
       return res.status(400).json({
         success: false,
-        error: 'Document ID and question are required',
+        error: "Document ID and question are required",
         statusCode: 400,
       });
     }
@@ -182,13 +182,13 @@ export const chat = async (req, res, next) => {
     const document = await Document.findOne({
       _id: documentId,
       userId: req.user._id,
-      status: 'completed',
+      status: "completed",
     });
 
     if (!document) {
       return res.status(404).json({
         success: false,
-        error: 'Document not found or not processed yet',
+        error: "Document not found or not processed yet",
         statusCode: 404,
       });
     }
@@ -214,13 +214,13 @@ export const chat = async (req, res, next) => {
     // Save conversation to chat history
     chatHistory.messages.push(
       {
-        role: 'user',
+        role: "user",
         content: question,
         timestamp: new Date(),
         relevantChunks: [],
       },
       {
-        role: 'assistant',
+        role: "assistant",
         content: answer,
         timestamp: new Date(),
         relevantChunks: chunkIndexes,
@@ -237,7 +237,7 @@ export const chat = async (req, res, next) => {
         relevantChunks: chunkIndexes,
         chatHistoryId: chatHistory._id,
       },
-      message: 'Chat response generated successfully',
+      message: "Chat response generated successfully",
       statusCode: 200,
     });
   } catch (error) {
@@ -257,27 +257,27 @@ export const explainConcept = async (req, res, next) => {
     if (!documentId || !concept) {
       return res.status(400).json({
         success: false,
-        error: 'Document ID and concept are required',
+        error: "Document ID and concept are required",
         statusCode: 400,
       });
     }
     const document = await Document.findOne({
       _id: documentId,
       userId: req.user._id,
-      status: 'completed',
+      status: "completed",
     });
 
     if (!document) {
       return res.status(404).json({
         success: false,
-        error: 'Document not found or not processed yet',
+        error: "Document not found or not processed yet",
         statusCode: 404,
       });
     }
 
     // Find relevant chunks for context
     const relevantChunks = findRelevantChunks(document.chunks, concept, 3); // Get top 3 relevant chunks
-    const context = relevantChunks.map((chunk) => chunk.content).join('\n\n');
+    const context = relevantChunks.map((chunk) => chunk.content).join("\n\n");
 
     // Generate explanation using Gemini API
     const explanation = await geminiService.explainConcept(concept, context);
@@ -289,7 +289,7 @@ export const explainConcept = async (req, res, next) => {
         explanation,
         relevantChunks: relevantChunks.map((chunk) => chunk.chunkIndex),
       },
-      message: 'Explanation generated successfully',
+      message: "Explanation generated successfully",
       statusCode: 200,
     });
   } catch (error) {
@@ -309,7 +309,7 @@ export const getChatHistory = async (req, res, next) => {
     if (!documentId) {
       return res.status(400).json({
         success: false,
-        error: 'Document ID is required',
+        error: "Document ID is required",
         statusCode: 400,
       });
     }
@@ -317,13 +317,13 @@ export const getChatHistory = async (req, res, next) => {
     const chatHistory = await ChatHistory.findOne({
       userId: req.user._id,
       documentId: documentId,
-    }).select('messages'); // Only return messages
+    }).select("messages"); // Only return messages
 
     if (!chatHistory) {
       return res.status(404).json({
         success: false,
         data: [],
-        message: 'Chat history not found',
+        message: "Chat history not found",
         statusCode: 404,
       });
     }
@@ -331,7 +331,7 @@ export const getChatHistory = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: chatHistory.messages,
-      message: 'Chat history retrieved successfully',
+      message: "Chat history retrieved successfully",
       statusCode: 200,
     });
   } catch (error) {
