@@ -1,4 +1,4 @@
-import Flashcard from '../models/Flashcard.js';
+import Flashcard from "../models/Flashcard.js";
 
 // @desc Get all flashcards for a document
 // @route GET /api/flashcards/document/:documentId
@@ -9,7 +9,7 @@ export const getFlashcards = async (req, res, next) => {
       userId: req.user._id,
       documentId: req.params.documentId,
     })
-      .populate('documentId', 'title fileName')
+      .populate("documentId", "title fileName")
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -28,7 +28,7 @@ export const getFlashcards = async (req, res, next) => {
 // @access Private
 export const getAllFlashcardSets = async (req, res, next) => {
   try {
-    const flashcardSets = await Flashcard.find({ userId: req.user._id }).populate('documentId', 'title').sort({ createdAt: -1 });
+    const flashcardSets = await Flashcard.find({ userId: req.user._id }).populate("documentId", "title").sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -47,14 +47,14 @@ export const getAllFlashcardSets = async (req, res, next) => {
 export const reviewFlashcard = async (req, res, next) => {
   try {
     const flashcardSet = await Flashcard.findOne({
-      'cards._id': req.params.cardId,
+      "cards._id": req.params.cardId,
       userId: req.user._id,
     });
 
     if (!flashcardSet) {
       return res.status(404).json({
         success: false,
-        error: 'Flashcard set or card not found',
+        error: "Flashcard set or card not found",
         statusCode: 404,
       });
     }
@@ -64,7 +64,7 @@ export const reviewFlashcard = async (req, res, next) => {
     if (cardIndex === -1) {
       return res.status(404).json({
         success: false,
-        error: 'Card not found in flashcard set',
+        error: "Card not found in flashcard set",
         statusCode: 404,
       });
     }
@@ -78,7 +78,7 @@ export const reviewFlashcard = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: flashcardSet,
-      message: 'Flashcard reviewed successfully',
+      message: "Flashcard reviewed!",
       statusCode: 200,
     });
   } catch (error) {
@@ -92,14 +92,14 @@ export const reviewFlashcard = async (req, res, next) => {
 export const toggleStarFlashcard = async (req, res, next) => {
   try {
     const flashcardSet = await Flashcard.findOne({
-      'cards._id': req.params.cardId,
+      "cards._id": req.params.cardId,
       userId: req.user._id,
     });
 
     if (!flashcardSet) {
       return res.status(404).json({
         success: false,
-        error: 'Flashcard set or card not found',
+        error: "Flashcard set or card not found",
         statusCode: 404,
       });
     }
@@ -109,7 +109,7 @@ export const toggleStarFlashcard = async (req, res, next) => {
     if (cardIndex === -1) {
       return res.status(404).json({
         success: false,
-        error: 'Card not found in flashcard set',
+        error: "Card not found in flashcard set",
         statusCode: 404,
       });
     }
@@ -122,7 +122,7 @@ export const toggleStarFlashcard = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: flashcardSet,
-      message: flashcardSet.cards[cardIndex].isStarred ? 'Flashcard starred' : 'Flashcard unstarred',
+      message: flashcardSet.cards[cardIndex].isStarred ? "Flashcard starred" : "Flashcard unstarred",
       statusCode: 200,
     });
   } catch (error) {
@@ -143,7 +143,7 @@ export const deleteFlashcardSet = async (req, res, next) => {
     if (!flashcardSet) {
       return res.status(404).json({
         success: false,
-        error: 'Flashcard set not found',
+        error: "Flashcard set not found",
         statusCode: 404,
       });
     }
@@ -152,7 +152,7 @@ export const deleteFlashcardSet = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: 'Flashcard set deleted successfully',
+      message: "Flashcard set deleted successfully",
       statusCode: 200,
     });
   } catch (error) {
