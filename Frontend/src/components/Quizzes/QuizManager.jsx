@@ -62,14 +62,16 @@ const QuizManager = ({ documentId }) => {
   };
 
   const handleConfirmDelete = async () => {
+    if (!selectedQuiz) return;
     setDeleting(true);
     try {
       await quizService.deleteQuiz(selectedQuiz._id);
-      toast.success("Quiz deleted successfully.");
+      toast.success(`'${selectedQuiz.title || "Quiz"}' deleted.`);
       setIsDeleteModalOpen(false);
-      fetchQuizzes();
+      setSelectedQuiz(null);
+      setQuizzes(quizzes.filter((q) => q._id !== selectedQuiz._id));
     } catch (error) {
-      toast.error("Failed to delete quiz.");
+      toast.error(error.message || "Failed to delete quiz.");
       console.error(error);
     } finally {
       setDeleting(false);
@@ -114,7 +116,7 @@ const QuizManager = ({ documentId }) => {
       <Modal
         isOpen={isGenerateModalOpen}
         onClose={() => setIsGenerateModalOpen(false)}
-        title="Generate new Quiz"
+        title="Generate New Quiz"
       >
         <form onSubmit={handleGenerateQuiz} className="space-y-4">
           <div>
@@ -146,6 +148,40 @@ const QuizManager = ({ documentId }) => {
             </Button>
           </div>
         </form>
+      </Modal>
+
+      {/* DELETE QUIZ */}
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="Confirm Delete Quiz"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-neutral-600">
+            Are you sure you want to delete the quiz:{" "}
+            <span className="font-semibold text-neutral-900">
+              {selectedQuiz?.title || "this quiz"}
+            </span>
+            ? This action cannot be undone.
+          </p>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setIsDeleteModalOpen(false)}
+              disabled={deleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleConfirmDelete}
+              disabled={deleting}
+              className="bg-red-500 hover:bg-red-600 focus:ring-red-500 active:bg-red-700"
+            >
+              {deleting ? "Deleting..." : "Delete"}
+            </Button>
+          </div>
+        </div>
       </Modal>
     </div>
   );
