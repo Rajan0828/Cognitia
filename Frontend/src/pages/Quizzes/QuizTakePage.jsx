@@ -98,7 +98,10 @@ const QuizTakePage = () => {
   }
 
   const currentQuestion = quiz.questions[currentQuestionIndex];
-  const isAnswered = selectedAnswers.hasOwnProperty(currentQuestion._id);
+  const isAnswered = Object.prototype.hasOwnProperty.call(
+    selectedAnswers,
+    currentQuestion._id,
+  );
   const answeredCount = Object.keys(selectedAnswers).length;
 
   return (
@@ -248,7 +251,8 @@ const QuizTakePage = () => {
       {/* QUESTION NAVIGATION DOTS */}
       <div className="mt-0 flex flex-wrap items-center justify-center gap-2">
         {quiz.questions.map((_, index) => {
-          const isAnsweredQuestion = selectedAnswers.hasOwnProperty(
+          const isAnsweredQuestion = Object.prototype.hasOwnProperty.call(
+            selectedAnswers,
             quiz.questions[index]._id,
           );
           const isCurrent = index === currentQuestionIndex;
@@ -264,7 +268,7 @@ const QuizTakePage = () => {
                   : isAnsweredQuestion
                     ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              } disabeled:cursor-not-allowed disabled:opacity-50`}
+              } disabled:cursor-not-allowed disabled:opacity-50`}
             >
               {index + 1}
             </button>
