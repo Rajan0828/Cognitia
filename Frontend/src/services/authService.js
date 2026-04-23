@@ -1,5 +1,5 @@
-import axiosInstance from '../utils/axiosInstance';
-import { API_PATHS } from '../utils/apiPaths';
+import axiosInstance from "../utils/axiosInstance";
+import { API_PATHS } from "../utils/apiPaths";
 
 const login = async (email, password) => {
   try {
@@ -9,7 +9,7 @@ const login = async (email, password) => {
     });
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: 'An unknown error occured.' };
+    throw error.response?.data || { message: "An unknown error occured." };
   }
 };
 
@@ -22,34 +22,40 @@ const register = async (username, email, password) => {
     });
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: 'An unknown error occured.' };
+    throw error.response?.data || { message: "An unknown error occured." };
   }
 };
 
 const getProfile = async () => {
   try {
-    const response = await axiosInstance.put(API_PATHS.AUTH.GET_PROFILE);
+    const response = await axiosInstance.get(API_PATHS.AUTH.GET_PROFILE);
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: 'An unknown error occured.' };
+    throw error.response?.data || { message: "An unknown error occured." };
   }
 };
 
 const updateProfile = async (userData) => {
   try {
-    const response = await axiosInstance.put(API_PATHS.AUTH.UPDATE_PROFILE, userData);
+    const response = await axiosInstance.put(
+      API_PATHS.AUTH.UPDATE_PROFILE,
+      userData,
+    );
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: 'An unknown error occured.' };
+    throw error.response?.data || { message: "An unknown error occured." };
   }
 };
 
 const changePassword = async (passwords) => {
   try {
-    const response = await axiosInstance.post(API_PATHS.AUTH.CHANGE_PASSWORD, passwords);
+    const response = await axiosInstance.post(
+      API_PATHS.AUTH.CHANGE_PASSWORD,
+      passwords,
+    );
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: 'An unknown error occured.' };
+    throw error.response?.data || { message: "An unknown error occured." };
   }
 };
 
